@@ -8,7 +8,7 @@ def main():
 
     if args.create: # -c NAME DESCRIPTION EXPIRATION_DATE
         task = tm.Task()
-        # Chacking Arguments Count
+        # Checking Arguments Count
         task.name = args.create[0] if len(args.create) > 0 else "Defaul Task"
         task.description = args.create[1] if len(args.create) > 1 else None
         task.expiration_date = ps.parse_expiration_date(args.create[2]) if len(args.create) > 2 else None
@@ -24,7 +24,8 @@ def main():
     if args.print_all: # -A
         pass
     if args.id: # -i
-        pass
+        tm.Task.print_id()
+        return
     if args.all_id: # -I
         pass
     else:

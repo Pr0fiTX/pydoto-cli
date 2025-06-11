@@ -21,7 +21,7 @@ class Task:
         self.expiration_date = expiration_date
         self.status = TaskStatus.ACTIVE
 
-    def complete(self):
+    def complete(self): # TODO: Write From Zero
         if (self.status == TaskStatus.DELETED):
             raise ValueError("!> You can't complete deleted task")
         else:
@@ -109,14 +109,40 @@ class Task:
         cls.update_expiration_statuses()
         tasks = cls.db_load()
         if not tasks:
-            print("!> You don't have any active tasks")
+            print("!> You don't have any tasks")
             return
 
-        print("=== ACTIVE TASKS ===")
-        for i, task in enumerate(tasks, 1):
+        print("\n\t=== ACTIVE TASKS ===\n")
+        print(' TITLE\tDESCRIPTION\tDUE DATE')
+        print('----' * 10)
+        for task in tasks:
             if (task.status != TaskStatus.ACTIVE):
                 continue
 
-            print(f"{task.name}\t",
-                  f"{task.description}\t" if task.description else "-\t",
-                  f"{task.expiration_date}\t" if task.expiration_date else "-\t")
+            print(f" {task.name}\t",
+                  f" {task.description}\t" if task.description else "-\t",
+                  f" {task.expiration_date}\t" if task.expiration_date else "-\t")
+            print('----' * 10)
+
+    @classmethod
+    def print_id(cls):
+        cls.update_expiration_statuses()
+        tasks = cls.db_load()
+        if not tasks:
+            print("!> You don't have any tasks")
+            return
+
+        print("\n\t=== TASKS ===\n")
+        print(' ID (CREATION DATE)\tTITLE\tDESCRIPTION\tDUE DATE\tSTATUS')
+        print('----' * 30)
+        for task in tasks:
+            if (task.status == TaskStatus.DELETED):
+                continue
+
+            print(f" {task.creation_date}\t",
+                  f" {task.name}\t",
+                  f" {task.description}\t" if task.description else "-\t",
+                  f" {task.expiration_date}\t" if task.expiration_date else "-\t",
+                  f" {task.status.value}\t")
+            print('----' * 30)
+

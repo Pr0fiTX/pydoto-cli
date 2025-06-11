@@ -16,10 +16,10 @@ def parseit():
                         metavar=('ID'), help="Mark task/tasks as deleted") # TODO: Opportunity to DELETE multiple tasks at once
     parser.add_argument('-d', '--done', nargs=1,
                         metavar=('ID'), help="Mark task/tasks as completed") # TODO: Opportunity to COMPLETE many tasks at once
-    parser.add_argument('-a', '--print-tasks', help="Prints all tasks (excluding DELETED)")
-    parser.add_argument('-A', '--print-all', help="Prints all tasks (including DELETED)")
-    parser.add_argument('-i', '--id', help="Prints all tasks ID (excluding DELETED)")
-    parser.add_argument('-I', '--all-id', help="Prints all tasks ID (including DELETED)")
+    parser.add_argument('-a', '--print-tasks', action='store_true', help="Prints all tasks (excluding DELETED)")
+    parser.add_argument('-A', '--print-all', action='store_true', help="Prints all tasks (including DELETED)")
+    parser.add_argument('-i', '--id', action='store_true', help="Prints all tasks ID (excluding DELETED)")
+    parser.add_argument('-I', '--all-id', action='store_true', help="Prints all tasks ID (including DELETED)")
     args = parser.parse_args()
 
     return args
