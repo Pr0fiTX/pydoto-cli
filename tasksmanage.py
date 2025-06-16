@@ -21,14 +21,6 @@ class Task:
         self.expiration_date = expiration_date
         self.status = TaskStatus.ACTIVE
 
-    def complete(self): # TODO: Write From Zero
-        if (self.status == TaskStatus.DELETED):
-            raise ValueError("!> You can't complete deleted task")
-        else:
-            self.status = TaskStatus.COMPLETED
-
-        return self.status
-
     def to_dict(self) -> dict:
         return {
             "name": self.name,
@@ -44,6 +36,34 @@ class Task:
         tasks = Task.db_load()
         tasks.append(self)
         Task.db_dump(tasks)
+
+    @classmethod
+    def mark_done(cls, task_id):
+        tasks = cls.db_load()
+
+        for task in tasks:
+            if (str(task.creation_date) == task_id):
+                if (task.status != TaskStatus.DELETED):
+                    task.status = TaskStatus.COMPLETED
+                    cls.db_dump(tasks)
+                    return
+                else:
+                    raise ValueError("!> You can't complete deleted task")
+
+        print("!> Incorrect task ID")
+
+    @classmethod
+    def mark_deleted(cls, task_id):
+        tasks = cls.db_load()
+
+        for task in tasks:
+            if (str(task.creation_date) == task_id):
+                task.status = TaskStatus.DELETED
+                cls.db_dump(tasks)
+                return
+
+        print("!> Incorrect task ID")
+
 
     @classmethod
     def update_expiration_statuses(cls):
@@ -145,4 +165,62 @@ class Task:
                   f" {task.expiration_date}\t" if task.expiration_date else "-\t",
                   f" {task.status.value}\t")
             print('----' * 30)
+
+    @classmethod
+    def print_id_all(cls):
+        cls.update_expiration_statuses()
+        tasks = cls.db_load()
+        if not tasks:
+            print("!> You don't have any tasks")
+            return
+
+        print("\n\t=== TASKS ===\n")
+        print(' ID (CREATION DATE)\tTITLE\tDESCRIPTION\tDUE DATE\tSTATUS')
+        print('----' * 30)
+        for task in tasks:
+            print(f" {task.creation_date}\t",
+                  f" {task.name}\t",
+                  f" {task.description}\t" if task.description else "-\t",
+                  f" {task.expiration_date}\t" if task.expiration_date else "-\t",
+                  f" {task.status.value}\t")
+            print('----' * 30)
+
+    @classmethod
+    def print_tasks(cls):
+        cls.update_expiration_statuses()
+        tasks = cls.db_load()
+        if not tasks:
+            print("!> You don't have any tasks")
+            return
+
+        print("\n\t=== TASKS ===\n")
+        print(' TITLE\tDESCRIPTION\tDUE DATE\tSTATUS')
+        print('----' * 20)
+        for task in tasks:
+            if (task.status == TaskStatus.DELETED):
+                continue
+
+            print(f" {task.name}\t",
+                  f" {task.description}\t" if task.description else "-\t",
+                  f" {task.expiration_date}\t" if task.expiration_date else "-\t",
+                  f" {task.status.value}\t")
+            print('----' * 20)
+
+    @classmethod
+    def print_tasks_all(cls):
+        cls.update_expiration_statuses()
+        tasks = cls.db_load()
+        if not tasks:
+            print("!> You don't have any tasks")
+            return
+
+        print("\n\t=== TASKS ===\n")
+        print(' TITLE\tDESCRIPTION\tDUE DATE\tSTATUS')
+        print('----' * 20)
+        for task in tasks:
+            print(f" {task.name}\t",
+                  f" {task.description}\t" if task.description else "-\t",
+                  f" {task.expiration_date}\t" if task.expiration_date else "-\t",
+                  f" {task.status.value}\t")
+            print('----' * 20)
 

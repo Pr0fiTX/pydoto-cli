@@ -16,18 +16,23 @@ def main():
         task.db_append()
         return
     if args.remove: # -r ID
-        pass
+        tm.Task.mark_deleted(args.remove[0])
+        return
     if args.done: # -d ID
-        pass
+        tm.Task.mark_done(args.done[0])
+        return
     if args.print_tasks: # -a
-        pass
+        tm.Task.print_tasks()
+        return
     if args.print_all: # -A
-        pass
+        tm.Task.print_tasks_all()
+        return
     if args.id: # -i
         tm.Task.print_id()
         return
     if args.all_id: # -I
-        pass
+        tm.Task.print_id_all()
+        return
     else:
         # Execute witheout any flags
         # Prints only ACTIVE tasks
