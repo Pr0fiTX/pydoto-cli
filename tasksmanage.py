@@ -1,5 +1,6 @@
 import json as js
 import os
+import taskprinter as tp
 from datetime import datetime
 from enum import Enum
 
@@ -125,102 +126,43 @@ class Task:
                 print(f"!> Can't write to the file {DB_NAME}: {e}")
 
     @classmethod
-    def print_active(cls): # TODO: Prettier Output
+    def print_active(cls):
         cls.update_expiration_statuses()
         tasks = cls.db_load()
-        if not tasks:
-            print("!> You don't have any tasks")
-            return
-
-        print("\n\t=== ACTIVE TASKS ===\n")
-        print(' TITLE\tDESCRIPTION\tDUE DATE')
-        print('----' * 10)
-        for task in tasks:
-            if (task.status != TaskStatus.ACTIVE):
-                continue
-
-            print(f" {task.name}\t",
-                  f" {task.description}\t" if task.description else "-\t",
-                  f" {task.expiration_date}\t" if task.expiration_date else "-\t")
-            print('----' * 10)
+        if not cls.check_for_emptiness(tasks):
+            tp.TaskPrinter.print_active(tasks)
 
     @classmethod
     def print_id(cls):
         cls.update_expiration_statuses()
         tasks = cls.db_load()
-        if not tasks:
-            print("!> You don't have any tasks")
-            return
-
-        print("\n\t=== TASKS ===\n")
-        print(' ID (CREATION DATE)\tTITLE\tDESCRIPTION\tDUE DATE\tSTATUS')
-        print('----' * 30)
-        for task in tasks:
-            if (task.status == TaskStatus.DELETED):
-                continue
-
-            print(f" {task.creation_date}\t",
-                  f" {task.name}\t",
-                  f" {task.description}\t" if task.description else "-\t",
-                  f" {task.expiration_date}\t" if task.expiration_date else "-\t",
-                  f" {task.status.value}\t")
-            print('----' * 30)
+        if not cls.check_for_emptiness(tasks):
+            tp.TaskPrinter.print_id(tasks)
 
     @classmethod
     def print_id_all(cls):
         cls.update_expiration_statuses()
         tasks = cls.db_load()
-        if not tasks:
-            print("!> You don't have any tasks")
-            return
-
-        print("\n\t=== TASKS ===\n")
-        print(' ID (CREATION DATE)\tTITLE\tDESCRIPTION\tDUE DATE\tSTATUS')
-        print('----' * 30)
-        for task in tasks:
-            print(f" {task.creation_date}\t",
-                  f" {task.name}\t",
-                  f" {task.description}\t" if task.description else "-\t",
-                  f" {task.expiration_date}\t" if task.expiration_date else "-\t",
-                  f" {task.status.value}\t")
-            print('----' * 30)
+        if not cls.check_for_emptiness(tasks):
+            tp.TaskPrinter.print_id_all(tasks)
 
     @classmethod
     def print_tasks(cls):
         cls.update_expiration_statuses()
         tasks = cls.db_load()
-        if not tasks:
-            print("!> You don't have any tasks")
-            return
-
-        print("\n\t=== TASKS ===\n")
-        print(' TITLE\tDESCRIPTION\tDUE DATE\tSTATUS')
-        print('----' * 20)
-        for task in tasks:
-            if (task.status == TaskStatus.DELETED):
-                continue
-
-            print(f" {task.name}\t",
-                  f" {task.description}\t" if task.description else "-\t",
-                  f" {task.expiration_date}\t" if task.expiration_date else "-\t",
-                  f" {task.status.value}\t")
-            print('----' * 20)
+        if not cls.check_for_emptiness(tasks):
+            tp.TaskPrinter.print_tasks(tasks)
 
     @classmethod
     def print_tasks_all(cls):
         cls.update_expiration_statuses()
         tasks = cls.db_load()
+        if not cls.check_for_emptiness(tasks):
+            tp.TaskPrinter.print_tasks_all(tasks)
+
+    @staticmethod
+    def check_for_emptiness(tasks) -> bool:
         if not tasks:
             print("!> You don't have any tasks")
-            return
-
-        print("\n\t=== TASKS ===\n")
-        print(' TITLE\tDESCRIPTION\tDUE DATE\tSTATUS')
-        print('----' * 20)
-        for task in tasks:
-            print(f" {task.name}\t",
-                  f" {task.description}\t" if task.description else "-\t",
-                  f" {task.expiration_date}\t" if task.expiration_date else "-\t",
-                  f" {task.status.value}\t")
-            print('----' * 20)
-
+            return True
+        return False
