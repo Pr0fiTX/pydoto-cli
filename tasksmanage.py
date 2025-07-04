@@ -23,6 +23,7 @@ class Task:
         self.status = TaskStatus.ACTIVE
 
     def to_dict(self) -> dict:
+        """Class -> Dictionary; For future save into .json"""
         return {
             "name": self.name,
             "description": self.description,
@@ -40,6 +41,7 @@ class Task:
 
     @classmethod
     def mark_done(cls, task_id):
+        """Set task.status = COMPLETED"""
         tasks = cls.db_load()
 
         for task in tasks:
@@ -55,6 +57,7 @@ class Task:
 
     @classmethod
     def mark_deleted(cls, task_id):
+        """task.status = DELETED"""
         tasks = cls.db_load()
 
         for task in tasks:
@@ -68,6 +71,7 @@ class Task:
 
     @classmethod
     def update_expiration_statuses(cls):
+        """Load from .json -> Update exp. statuses -> Save to .json"""
         tasks = []
         tasks_new = []
 
@@ -83,7 +87,7 @@ class Task:
 
     @classmethod
     def from_dict(cls, data):
-        """Convert ONE dict -> Task"""
+        """Convert ONE Dict -> Class"""
         expiration_date = datetime.fromisoformat(data['expiration_date']) if data['expiration_date'] else None
         task = cls(data['name'], data['description'], expiration_date)
         task.creation_date = datetime.fromisoformat(data['creation_date'])
@@ -93,6 +97,7 @@ class Task:
 
     @classmethod
     def db_load(cls) -> list:
+        """Load tasks from .json into list (AS CLASSES)"""
         if not os.path.exists(DB_NAME):
             print(f"!> File {DB_NAME} doesn't exist")
 
@@ -113,6 +118,7 @@ class Task:
 
     @classmethod
     def db_dump(cls, data):
+        """Save tasks from list -> .json"""
         data_dict = []
 
         for task in data:
@@ -127,6 +133,7 @@ class Task:
 
     @classmethod
     def print_active(cls):
+        """Print only ACTIVE to stdout"""
         cls.update_expiration_statuses()
         tasks = cls.db_load()
         if not cls.check_for_emptiness(tasks):
@@ -134,6 +141,7 @@ class Task:
 
     @classmethod
     def print_id(cls):
+        """Print only NOT DELETED with ID column"""
         cls.update_expiration_statuses()
         tasks = cls.db_load()
         if not cls.check_for_emptiness(tasks):
@@ -141,6 +149,7 @@ class Task:
 
     @classmethod
     def print_id_all(cls):
+        """Print ALL TASKS with ID column"""
         cls.update_expiration_statuses()
         tasks = cls.db_load()
         if not cls.check_for_emptiness(tasks):
@@ -148,6 +157,7 @@ class Task:
 
     @classmethod
     def print_tasks(cls):
+        """Print only NOT DELETED from .json"""
         cls.update_expiration_statuses()
         tasks = cls.db_load()
         if not cls.check_for_emptiness(tasks):
@@ -155,6 +165,7 @@ class Task:
 
     @classmethod
     def print_tasks_all(cls):
+        """Prints ALL TASKS from .json"""
         cls.update_expiration_statuses()
         tasks = cls.db_load()
         if not cls.check_for_emptiness(tasks):
@@ -162,6 +173,7 @@ class Task:
 
     @staticmethod
     def check_for_emptiness(tasks) -> bool:
+        """Is .json empty?"""
         if not tasks:
             print("!> You don't have any tasks")
             return True

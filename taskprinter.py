@@ -6,6 +6,7 @@ class TaskPrinter:
 
     @classmethod
     def mark_choser(cls, task) -> str:
+        """Returns pretty thing:3"""
         match task.status.value:
             case "active":
                 return cls.ACTIVE_M
@@ -54,6 +55,7 @@ class TaskPrinter:
 
     @classmethod
     def task_out(cls, task, sta=0, id=0, nam=0, des=0, exp=0):
+        """Task output template, out tasks ONLY via this function!"""
         print(f"{cls.mark_choser(task)}" if sta else "",
               f"| \"{task.creation_date}\" |" if id else "",
               f"{task.name}" if nam else "",

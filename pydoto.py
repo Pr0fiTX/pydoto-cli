@@ -34,7 +34,7 @@ def main():
         tm.Task.print_id_all()
         return
     else:
-        # Execute witheout any flags
+        # Execute without any flags
         # Prints only ACTIVE tasks
         tm.Task.print_active()
         return
