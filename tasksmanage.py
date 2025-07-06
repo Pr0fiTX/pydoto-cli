@@ -99,7 +99,7 @@ class Task:
     def db_load(cls) -> list:
         """Load tasks from .json into list (AS CLASSES)"""
         if not os.path.exists(DB_NAME):
-            print(f"!> File {DB_NAME} doesn't exist. Check --help menu.")
+            print(f"!> File {DB_NAME} doesn't exist. Use -f flag to create DB or move existing.")
             exit(1)
         
         try:
@@ -175,7 +175,9 @@ class Task:
     def create_db(cls):
         """Creates DB file (if doesn't exist)"""
         with open(DB_NAME, "w"):
-            pass
+            task = []
+            task.append(Task())
+            cls.db_dump(task)
 
         if os.path.exists(DB_NAME):
             print("=> DB succesfuly created")
