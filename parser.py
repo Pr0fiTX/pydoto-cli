@@ -10,6 +10,7 @@ def parseit():
 
     parser.add_argument("-c", "--create", nargs='*', metavar=('ARGS'),
                         help="You can provide NAME, DESCRIPTION, EXPIRATION_DATE to create a new task")
+    parser.add_argument("-f", "--db-create", action="store_true", help="Create a new DB file (if doesn't exist yet)")
     # parser.add_argument("-c", "--create", nargs='*', metavar=('NAME',
     #                     'DESCRIPTION', 'EXPIRATION_DATE'), help="Provide NAME, DESCRIPTION, EXPIRATION_DATE to create a new task")
     parser.add_argument('-r', '--remove', nargs=1,

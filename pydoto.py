@@ -15,6 +15,9 @@ def main():
         # Saving Task to DB
         task.db_append()
         return
+    if args.db_create: # -f
+        tm.Task.create_db()
+        return
     if args.remove: # -r ID
         tm.Task.mark_deleted(args.remove[0])
         return

@@ -99,22 +99,18 @@ class Task:
     def db_load(cls) -> list:
         """Load tasks from .json into list (AS CLASSES)"""
         if not os.path.exists(DB_NAME):
-            print(f"!> File {DB_NAME} doesn't exist")
-
-            return []
+            print(f"!> File {DB_NAME} doesn't exist. Check --help menu.")
+            exit(1)
         
         try:
             with open(DB_NAME, "r", encoding='utf-8') as f:
                 tasks_data = js.load(f)
                 if not isinstance(tasks_data, list):
                     tasks_data = [tasks_data]
-
                 return [cls.from_dict(task_data) for task_data in tasks_data]
-
         except (js.JSONDecodeError, IOError) as e:
             print(f"!> Can't read {DB_NAME}: {e}")
-
-            return []
+            exit(1)
 
     @classmethod
     def db_dump(cls, data):
@@ -124,12 +120,16 @@ class Task:
         for task in data:
             data_dict.append(cls.to_dict(task))
 
-        if os.path.exists(DB_NAME):
-            try:
-                with open(DB_NAME, 'w', encoding='utf-8') as f:
-                    js.dump(data_dict, f, ensure_ascii=False, indent=4)
-            except IOError as e:
-                print(f"!> Can't write to the file {DB_NAME}: {e}")
+        if not os.path.exists(DB_NAME):
+            print(f"!> File {DB_NAME} doesn't exist. Check --help menu.")
+            exit(1)
+
+        try:
+            with open(DB_NAME, 'w', encoding='utf-8') as f:
+                js.dump(data_dict, f, ensure_ascii=False, indent=4)
+        except IOError as e:
+            print(f"!> Can't write to the file {DB_NAME}: {e}")
+            exit(1)
 
     @classmethod
     def print_active(cls):
@@ -170,6 +170,17 @@ class Task:
         tasks = cls.db_load()
         if not cls.check_for_emptiness(tasks):
             tp.TaskPrinter.print_tasks_all(tasks)
+
+    @classmethod
+    def create_db(cls):
+        """Creates DB file (if doesn't exist)"""
+        with open(DB_NAME, "w"):
+            pass
+
+        if os.path.exists(DB_NAME):
+            print("=> DB succesfuly created")
+        else:
+            print("!> Can't create DB")
 
     @staticmethod
     def check_for_emptiness(tasks) -> bool:
