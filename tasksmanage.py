@@ -5,13 +5,14 @@ from datetime import datetime
 from enum import Enum
 
 
-DB_NAME = 'pydoto.json'
+DB_NAME = "pydoto.json"
+
 
 class TaskStatus(Enum):
-    ACTIVE = 'active'
-    COMPLETED = 'completed'
-    EXPIRED = 'expired'
-    DELETED = 'deleted'
+    ACTIVE = "active"
+    COMPLETED = "completed"
+    EXPIRED = "expired"
+    DELETED = "deleted"
 
 
 class Task:
@@ -29,7 +30,9 @@ class Task:
             "description": self.description,
             "status": self.status.value,
             "creation_date": self.creation_date.isoformat(),
-            "expiration_date": self.expiration_date.isoformat() if self.expiration_date else None
+            "expiration_date": self.expiration_date.isoformat()
+            if self.expiration_date
+            else None,
         }
 
     def db_append(self):
@@ -45,8 +48,8 @@ class Task:
         tasks = cls.db_load()
 
         for task in tasks:
-            if (str(task.creation_date) == task_id):
-                if (task.status != TaskStatus.DELETED):
+            if str(task.creation_date) == task_id:
+                if task.status != TaskStatus.DELETED:
                     task.status = TaskStatus.COMPLETED
                     cls.db_dump(tasks)
                     return
@@ -61,13 +64,12 @@ class Task:
         tasks = cls.db_load()
 
         for task in tasks:
-            if (str(task.creation_date) == task_id):
+            if str(task.creation_date) == task_id:
                 task.status = TaskStatus.DELETED
                 cls.db_dump(tasks)
                 return
 
         print("!> Incorrect task ID")
-
 
     @classmethod
     def update_expiration_statuses(cls):
@@ -78,7 +80,11 @@ class Task:
         tasks = cls.db_load()
 
         for task in tasks:
-            if (task.expiration_date and task.status == TaskStatus.ACTIVE and task.expiration_date < datetime.now()):
+            if (
+                task.expiration_date
+                and task.status == TaskStatus.ACTIVE
+                and task.expiration_date < datetime.now()
+            ):
                 task.status = TaskStatus.EXPIRED
 
             tasks_new.append(task)
@@ -88,10 +94,14 @@ class Task:
     @classmethod
     def from_dict(cls, data):
         """Convert ONE Dict -> Class"""
-        expiration_date = datetime.fromisoformat(data['expiration_date']) if data['expiration_date'] else None
-        task = cls(data['name'], data['description'], expiration_date)
-        task.creation_date = datetime.fromisoformat(data['creation_date'])
-        task.status = TaskStatus(data['status'])
+        expiration_date = (
+            datetime.fromisoformat(data["expiration_date"])
+            if data["expiration_date"]
+            else None
+        )
+        task = cls(data["name"], data["description"], expiration_date)
+        task.creation_date = datetime.fromisoformat(data["creation_date"])
+        task.status = TaskStatus(data["status"])
 
         return task
 
@@ -99,11 +109,13 @@ class Task:
     def db_load(cls) -> list:
         """Load tasks from .json into list (AS CLASSES)"""
         if not os.path.exists(DB_NAME):
-            print(f"!> File {DB_NAME} doesn't exist. Use -f flag to create DB or move existing.")
+            print(
+                f"!> File {DB_NAME} doesn't exist. Use -f flag to create DB or move existing."
+            )
             exit(1)
-        
+
         try:
-            with open(DB_NAME, "r", encoding='utf-8') as f:
+            with open(DB_NAME, "r", encoding="utf-8") as f:
                 tasks_data = js.load(f)
                 if not isinstance(tasks_data, list):
                     tasks_data = [tasks_data]
@@ -125,7 +137,7 @@ class Task:
             exit(1)
 
         try:
-            with open(DB_NAME, 'w', encoding='utf-8') as f:
+            with open(DB_NAME, "w", encoding="utf-8") as f:
                 js.dump(data_dict, f, ensure_ascii=False, indent=4)
         except IOError as e:
             print(f"!> Can't write to the file {DB_NAME}: {e}")
