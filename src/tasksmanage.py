@@ -1,11 +1,10 @@
 import json as js
 import os
-import taskprinter as tp
-from datetime import datetime
 from enum import Enum
+from datetime import datetime
 
-
-DB_NAME = "pydoto.json"
+import taskprinter as tp
+from config import Config
 
 
 class TaskStatus(Enum):
@@ -108,20 +107,20 @@ class Task:
     @classmethod
     def db_load(cls) -> list:
         """Load tasks from .json into list (AS CLASSES)"""
-        if not os.path.exists(DB_NAME):
+        if not os.path.exists(Config.DB_PATH):
             print(
-                f"!> File {DB_NAME} doesn't exist. Use -f flag to create DB or move existing."
+                f"!> File {Config.DB_PATH} doesn't exist. Use -f flag to create DB or move existing."
             )
             exit(1)
 
         try:
-            with open(DB_NAME, "r", encoding="utf-8") as f:
+            with open(Config.DB_PATH, "r", encoding="utf-8") as f:
                 tasks_data = js.load(f)
                 if not isinstance(tasks_data, list):
                     tasks_data = [tasks_data]
                 return [cls.from_dict(task_data) for task_data in tasks_data]
         except (js.JSONDecodeError, IOError) as e:
-            print(f"!> Can't read {DB_NAME}: {e}")
+            print(f"!> Can't read {Config.DB_PATH}: {e}")
             exit(1)
 
     @classmethod
@@ -132,15 +131,15 @@ class Task:
         for task in data:
             data_dict.append(cls.to_dict(task))
 
-        if not os.path.exists(DB_NAME):
-            print(f"!> File {DB_NAME} doesn't exist. Check --help menu.")
+        if not os.path.exists(Config.DB_PATH):
+            print(f"!> File {Config.DB_PATH} doesn't exist. Check --help menu.")
             exit(1)
 
         try:
-            with open(DB_NAME, "w", encoding="utf-8") as f:
+            with open(Config.DB_PATH, "w", encoding="utf-8") as f:
                 js.dump(data_dict, f, ensure_ascii=False, indent=4)
         except IOError as e:
-            print(f"!> Can't write to the file {DB_NAME}: {e}")
+            print(f"!> Can't write to the file {Config.DB_PATH}: {e}")
             exit(1)
 
     @classmethod
@@ -186,12 +185,12 @@ class Task:
     @classmethod
     def create_db(cls):
         """Creates DB file (if doesn't exist)"""
-        with open(DB_NAME, "w"):
+        with open(Config.DB_PATH, "w"):
             task = []
             task.append(Task())
             cls.db_dump(task)
 
-        if os.path.exists(DB_NAME):
+        if os.path.exists(Config.DB_PATH):
             print("=> DB succesfuly created")
         else:
             print("!> Can't create DB")
