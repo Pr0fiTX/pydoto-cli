@@ -1,5 +1,6 @@
 import parser as ps
 import tasksmanage as tm
+import cloud as cd
 
 
 def main():
@@ -37,6 +38,12 @@ def main():
         return
     if args.all_id:  # -I
         tm.Task.print_id_all()
+        return
+    if args.cloud_save:  # -S
+        cd.Cloud.dbx_auth(0)
+        return
+    if args.cloud_load:  # -L
+        cd.Cloud.dbx_auth(0)
         return
     else:
         # Execute without any flags

@@ -50,6 +50,19 @@ def parseit():
         action="store_true",
         help="Prints all tasks ID (including DELETED)",
     )
+    parser.add_argument(
+        "-S",
+        "--cloud-save",
+        action="store_true",
+        help="Save .conf & .json files into your Cloud method, provided in .conf",
+    )
+    parser.add_argument(
+        "-L",
+        "--cloud-load",
+        action="store_true",
+        help="Load .conf & .json files from your Cloud method, provided in .conf",
+    )
+
     args = parser.parse_args()
 
     return args
